@@ -1,20 +1,23 @@
 {
-    "expo": {
-      "name": "react-native-expo-starter",
-      "slug": "react-native-expo-starter",
-      "version": "1.0.0",
-      "orientation": "portrait",
-      "scheme": "myapp",
-      "userInterfaceStyle": "automatic",
-      "ios": {
-        "supportsTablet": true
-      },
-      "web": {
-        "bundler": "metro"
-      },
-      "plugins": ["expo-router", "expo-image-picker"],
-      "experiments": {
-        "typedRoutes": true
-      }
+  "expo": {
+    "name": "FinZen",
+    "slug": "FinZen",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "myapp",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "backgroundColor": "#0F172A"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "web": {
+      "bundler": "metro"
+    },
+    "plugins": ["expo-router", "expo-image-picker"],
+    "experiments": {
+      "typedRoutes": true
     }
   }
+}

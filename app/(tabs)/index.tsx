@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -10,14 +10,14 @@ import {
   RefreshControl,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
 import {
   PlusCircle,
   ArrowUpRight,
-  ArrowDownLeft,
   Target,
-  TrendingUp,
   Award,
   Zap,
+  TrendingUp,
 } from 'lucide-react-native';
 import { useAuth } from '../../contexts/AuthContext';
 import { useUserData } from '../../hooks/useUserData';
@@ -27,23 +27,21 @@ const { width } = Dimensions.get('window');
 
 export default function HomeScreen() {
   const { user, loading: authLoading } = useAuth();
+  const router = useRouter();
   const { 
     accounts, 
     savingsGoals, 
     transactions, 
     loading: dataLoading, 
-    error, 
     refetchData 
   } = useUserData();
 
   const [refreshing, setRefreshing] = useState(false);
 
-  // Show auth screen if user is not authenticated
   if (!user && !authLoading) {
     return <AuthScreen />;
   }
 
-  // Show loading state
   if (authLoading || (user && dataLoading && !refreshing)) {
     return (
       <View style={[styles.container, styles.centered]}>
@@ -52,18 +50,11 @@ export default function HomeScreen() {
     );
   }
 
-  // Calculate total balance from accounts
   const totalBalance = accounts.reduce((sum, account) => sum + account.balance, 0);
-
-  // Calculate savings progress
   const totalSaved = savingsGoals.reduce((sum, goal) => sum + goal.current_amount, 0);
   const totalTargets = savingsGoals.reduce((sum, goal) => sum + goal.target_amount, 0);
   const savingsProgress = totalTargets > 0 ? (totalSaved / totalTargets) * 100 : 0;
-
-  // Get recent transactions (last 5)
   const recentTransactions = transactions.slice(0, 5);
-
-  // Get active goals (not completed, limited to 3)
   const activeGoals = savingsGoals.filter(goal => !goal.is_completed).slice(0, 3);
 
   const onRefresh = async () => {
@@ -73,7 +64,16 @@ export default function HomeScreen() {
   };
 
   const handleQuickAction = (action: string) => {
-    Alert.alert('Coming Soon', `${action} feature will be available soon!`);
+    switch(action) {
+      case 'New Goal':
+        router.push('/(tabs)/goals');
+        break;
+      case 'Invest':
+        router.push('/(tabs)/invest');
+        break;
+      default:
+        Alert.alert('Coming Soon', `${action} feature will be available soon!`);
+    }
   };
 
   return (
@@ -83,13 +83,12 @@ export default function HomeScreen() {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
-      {/* Header */}
       <View style={styles.header}>
         <View>
           <Text style={styles.greeting}>Hey {user?.full_name?.split(' ')[0] || 'there'}! 👋</Text>
           <Text style={styles.subtitle}>Ready to grow your money?</Text>
         </View>
-        <TouchableOpacity style={styles.profileButton}>
+        <TouchableOpacity style={styles.profileButton} onPress={() => router.push('/(tabs)/profile')}>
           <View style={styles.profileAvatar}>
             <Text style={styles.profileText}>
               {user?.full_name?.charAt(0) || user?.email?.charAt(0) || 'U'}
@@ -98,7 +97,6 @@ export default function HomeScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* Balance Card */}
       <LinearGradient
         colors={['#8B5CF6', '#EC4899', '#F59E0B']}
         start={{ x: 0, y: 0 }}
@@ -121,7 +119,6 @@ export default function HomeScreen() {
         </View>
       </LinearGradient>
 
-      {/* Quick Actions */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Quick Actions</Text>
         <View style={styles.actionsGrid}>
@@ -164,11 +161,10 @@ export default function HomeScreen() {
         </View>
       </View>
 
-      {/* Savings Goals */}
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Active Goals</Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push('/(tabs)/goals')}>
             <Text style={styles.seeAll}>See All</Text>
           </TouchableOpacity>
         </View>
@@ -186,11 +182,10 @@ export default function HomeScreen() {
         )}
       </View>
 
-      {/* Recent Transactions */}
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Recent Activity</Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push('/(tabs)/wallet')}>
             <Text style={styles.seeAll}>See All</Text>
           </TouchableOpacity>
         </View>
@@ -208,7 +203,6 @@ export default function HomeScreen() {
         </View>
       </View>
 
-      {/* Achievement */}
       <View style={styles.achievementCard}>
         <View style={styles.achievementIcon}>
           <Award color="#F59E0B" size={24} />

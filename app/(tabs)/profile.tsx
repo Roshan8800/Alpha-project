@@ -9,6 +9,7 @@ import {
   Image,
   Alert,
   ActivityIndicator,
+  Linking,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as ImagePicker from 'expo-image-picker';
@@ -31,6 +32,12 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useUserData } from '../../hooks/useUserData';
 import { ProfileService } from '../../services/profileService';
 import AuthScreen from '../../components/AuthScreen';
+
+const SUPPORT_EMAIL = 'roshan8800jp@gmail.com';
+
+const openSupportEmail = () => {
+  Linking.openURL(`mailto:${SUPPORT_EMAIL}?subject=FinZen App Support`);
+};
 
 export default function ProfileScreen() {
   const { user, signOut, loading: authLoading } = useAuth();
@@ -92,7 +99,7 @@ export default function ProfileScreen() {
       if (updateError) throw updateError;
       
       Alert.alert('Success', 'Profile picture updated!');
-      await refetchData(); // refetch data to get new avatar_url
+      await refetchData();
     } catch (error: any) {
       console.error("Avatar Upload Error:", error);
       Alert.alert('Upload Error', error.message || 'Failed to upload avatar. Please try again.');
@@ -120,13 +127,12 @@ export default function ProfileScreen() {
     { title: 'Security & Privacy', icon: Shield, color: '#10B981', hasSwitch: false },
     { title: 'Notifications', icon: Bell, color: '#3B82F6', hasSwitch: true, switchValue: notificationsEnabled, onSwitchChange: setNotificationsEnabled },
     { title: 'Dark Mode', icon: Moon, color: '#6B7280', hasSwitch: true, switchValue: darkModeEnabled, onSwitchChange: setDarkModeEnabled },
-    { title: 'Help & Support', icon: HelpCircle, color: '#F59E0B', hasSwitch: false },
+    { title: 'Help & Support', icon: HelpCircle, color: '#F59E0B', hasSwitch: false, action: openSupportEmail },
     { title: 'About FinZen', icon: Info, color: '#EC4899', hasSwitch: false, action: () => router.push('/about') },
   ];
 
   return (
     <ScrollView style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>Profile</Text>
         <TouchableOpacity style={styles.settingsButton}>
@@ -134,7 +140,6 @@ export default function ProfileScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* Profile Card */}
       <LinearGradient
         colors={['#8B5CF6', '#EC4899']}
         start={{ x: 0, y: 0 }}
@@ -207,7 +212,6 @@ export default function ProfileScreen() {
         </View>
       </View>
 
-      {/* Logout Button */}
       <TouchableOpacity style={styles.logoutButton} onPress={handleSignOut}>
         <LogOut color="#EF4444" size={20} />
         <Text style={styles.logoutText}>Sign Out</Text>

@@ -1,12 +1,11 @@
+import 'react-native-gesture-handler';
 import { useEffect, useCallback } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as ExpoSplashScreen from 'expo-splash-screen';
-import { useFrameworkReady } from '../hooks/useFrameworkReady';
 import { AuthProvider, useAuth } from '../contexts/AuthContext';
 import SplashScreen from '../components/SplashScreen';
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 ExpoSplashScreen.preventAutoHideAsync();
 
 function RootLayoutNav() {
@@ -46,8 +45,6 @@ function RootLayoutNav() {
 }
 
 export default function RootLayout() {
-  useFrameworkReady();
-
   return (
     <AuthProvider>
       <RootLayoutNav />

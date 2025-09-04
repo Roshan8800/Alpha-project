@@ -1,6 +1,15 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Linking, Alert } from 'react-native';
 import Constants from 'expo-constants';
+import { Mail, ChevronRight } from 'lucide-react-native';
+
+const SUPPORT_EMAIL = 'roshan8800jp@gmail.com';
+
+const openSupportEmail = () => {
+  Linking.openURL(`mailto:${SUPPORT_EMAIL}?subject=FinZen App Support & Bug Report`).catch(() => {
+    Alert.alert("Cannot open email", "Please send an email to roshan8800jp@gmail.com for support.");
+  });
+};
 
 export default function AboutScreen() {
   const appVersion = Constants.expoConfig?.version || '1.0.0';
@@ -14,6 +23,15 @@ export default function AboutScreen() {
           FinZen is a modern savings application designed to help you achieve your financial goals with ease and a bit of fun.
         </Text>
       </View>
+      
+      <TouchableOpacity style={styles.supportButton} onPress={openSupportEmail}>
+        <View style={styles.supportButtonLeft}>
+          <Mail color="#8B5CF6" size={20} />
+          <Text style={styles.supportButtonText}>Support & Bug Reports</Text>
+        </View>
+        <ChevronRight color="#9CA3AF" size={20} />
+      </TouchableOpacity>
+
       <View style={styles.authorContainer}>
         <Text style={styles.authorText}>Created by</Text>
         <Text style={styles.authorName}>Roshan Sahu</Text>
@@ -46,13 +64,33 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 24,
     width: '100%',
-    marginBottom: 32,
+    marginBottom: 24,
   },
   cardText: {
     color: '#E5E7EB',
     fontSize: 16,
     textAlign: 'center',
     lineHeight: 24,
+  },
+  supportButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#1E293B',
+    borderRadius: 12,
+    padding: 16,
+    width: '100%',
+    marginBottom: 32,
+  },
+  supportButtonLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  supportButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '600',
   },
   authorContainer: {
     alignItems: 'center',

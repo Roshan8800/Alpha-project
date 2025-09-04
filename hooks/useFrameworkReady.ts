@@ -1,13 +1,2 @@
-import { useEffect } from 'react';
-
-declare global {
-  interface Window {
-    frameworkReady?: () => void;
-  }
-}
-
-export function useFrameworkReady() {
-  useEffect(() => {
-    window.frameworkReady?.();
-  });
-}
+// This file is no longer needed and can be deleted.
+// I am leaving it empty to effectively remove it from the build process.
