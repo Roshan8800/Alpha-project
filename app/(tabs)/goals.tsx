@@ -11,7 +11,7 @@ import {
   RefreshControl,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Plus, Target, Calendar, DollarSign, X } from 'lucide-react-native';
+import { Plus, Calendar, DollarSign, X } from 'lucide-react-native';
 import { useAuth } from '../../contexts/AuthContext';
 import { useUserData } from '../../hooks/useUserData';
 import { GoalService } from '../../services/goalService';
@@ -19,7 +19,7 @@ import AuthScreen from '../../components/AuthScreen';
 
 export default function GoalsScreen() {
   const { user } = useAuth();
-  const { savingsGoals, loading, refetchData } = useUserData();
+  const { savingsGoals, refetchData } = useUserData();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [creating, setCreating] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -51,7 +51,7 @@ export default function GoalsScreen() {
     setCreating(true);
 
     try {
-      const { data, error } = await GoalService.createGoal(user.id, {
+      const { error } = await GoalService.createGoal(user.id, {
         title: newGoal.title,
         target_amount: targetAmount,
         emoji: newGoal.emoji,
@@ -100,7 +100,7 @@ export default function GoalsScreen() {
                 Alert.alert('Success', `$${amount} added to ${goalTitle}!`);
                 refetchData();
               }
-            } catch (error) {
+            } catch {
               Alert.alert('Error', 'Something went wrong. Please try again.');
             }
           },

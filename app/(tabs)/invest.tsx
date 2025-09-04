@@ -11,7 +11,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 import {
   TrendingUp,
   TrendingDown,
-  DollarSign,
   PieChart,
   BarChart3,
   Zap,

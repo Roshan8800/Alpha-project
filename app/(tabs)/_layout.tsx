@@ -1,5 +1,4 @@
 import { Tabs } from 'expo-router';
-import { View } from 'react-native';
 import { Home, Target, TrendingUp, User, Wallet } from 'lucide-react-native';
 
 export default function TabLayout() {

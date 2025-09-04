@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -70,14 +70,8 @@ export function useUserData() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (user) {
-      loadUserData();
-      setupRealtimeSubscriptions();
-    }
-  }, [user]);
-
-  const loadUserData = async () => {
+  const loadUserData = useCallback(async () => {
+    if (!user) return;
     try {
       setLoading(true);
       setError(null);
@@ -90,11 +84,11 @@ export function useUserData() {
         transactionsRes,
         investmentsRes,
       ] = await Promise.all([
-        supabase.from('profiles').select('*').eq('id', user!.id).single(),
-        supabase.from('accounts').select('*').eq('user_id', user!.id).order('created_at'),
-        supabase.from('savings_goals').select('*').eq('user_id', user!.id).order('created_at'),
-        supabase.from('transactions').select('*').eq('user_id', user!.id).order('transaction_date', { ascending: false }).limit(50),
-        supabase.from('investments').select('*').eq('user_id', user!.id).order('created_at'),
+        supabase.from('profiles').select('*').eq('id', user.id).single(),
+        supabase.from('accounts').select('*').eq('user_id', user.id).order('created_at'),
+        supabase.from('savings_goals').select('*').eq('user_id', user.id).order('created_at'),
+        supabase.from('transactions').select('*').eq('user_id', user.id).order('transaction_date', { ascending: false }).limit(50),
+        supabase.from('investments').select('*').eq('user_id', user.id).order('created_at'),
       ]);
 
       if (profileRes.error) throw profileRes.error;
@@ -113,9 +107,9 @@ export function useUserData() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
 
-  const setupRealtimeSubscriptions = () => {
+  const setupRealtimeSubscriptions = useCallback(() => {
     if (!user) return;
 
     // Subscribe to accounts changes
@@ -156,7 +150,19 @@ export function useUserData() {
       goalsSubscription.unsubscribe();
       transactionsSubscription.unsubscribe();
     };
-  };
+  }, [user, loadUserData]);
+
+  useEffect(() => {
+    if (user) {
+      loadUserData();
+      const unsubscribe = setupRealtimeSubscriptions();
+      return () => {
+        if (unsubscribe) {
+          unsubscribe();
+        }
+      };
+    }
+  }, [user, loadUserData, setupRealtimeSubscriptions]);
 
   const refetchData = () => {
     if (user) {

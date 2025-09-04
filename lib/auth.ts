@@ -85,6 +85,9 @@ export class AuthService {
 
   static async resetPassword(email: string) {
     try {
+      // TODO: This uses window.location.origin, which will not work in React Native.
+      // A deep link to a reset password screen is required to fix this.
+      // Example: redirectTo: 'myapp://reset-password'
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/reset-password`,
       });
