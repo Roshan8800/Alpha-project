@@ -1,1 +1,1 @@
-# Alpha-project
+# fintech-app-alpha
