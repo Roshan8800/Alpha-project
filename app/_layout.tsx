@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
-import { useEffect, useCallback } from 'react';
-import { Stack } from 'expo-router';
+import { useEffect } from 'react';
+import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as ExpoSplashScreen from 'expo-splash-screen';
 import { AuthProvider, useAuth } from '../contexts/AuthContext';
@@ -9,17 +9,21 @@ import SplashScreen from '../components/SplashScreen';
 ExpoSplashScreen.preventAutoHideAsync();
 
 function RootLayoutNav() {
-  const { loading } = useAuth();
-
-  const onLayoutRootView = useCallback(async () => {
-    if (!loading) {
-      await ExpoSplashScreen.hideAsync();
-    }
-  }, [loading]);
+  const { user, loading } = useAuth();
+  const router = useRouter();
+  const segments = useSegments();
+  const inAuthGroup = segments[0] === '(auth)';
 
   useEffect(() => {
-    onLayoutRootView();
-  }, [onLayoutRootView]);
+    if (loading) return;
+
+    if (!user && !inAuthGroup) {
+      router.replace('/(auth)');
+    } else if (user && inAuthGroup) {
+      router.replace('/(tabs)');
+    }
+    ExpoSplashScreen.hideAsync();
+  }, [user, loading, inAuthGroup, router]);
 
   if (loading) {
     return <SplashScreen />;
@@ -28,6 +32,7 @@ function RootLayoutNav() {
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="(auth)" options={{ headerShown: false }} />
       <Stack.Screen name="+not-found" />
       <Stack.Screen
         name="about"

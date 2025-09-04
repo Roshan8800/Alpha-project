@@ -15,7 +15,6 @@ import { Plus, Calendar, DollarSign, X } from 'lucide-react-native';
 import { useAuth } from '../../contexts/AuthContext';
 import { useUserData } from '../../hooks/useUserData';
 import { GoalService } from '../../services/goalService';
-import AuthScreen from '../../components/AuthScreen';
 
 export default function GoalsScreen() {
   const { user } = useAuth();
@@ -29,10 +28,6 @@ export default function GoalsScreen() {
     emoji: '🎯',
     color: '#8B5CF6',
   });
-
-  if (!user) {
-    return <AuthScreen />;
-  }
 
   const colors = ['#8B5CF6', '#EC4899', '#10B981', '#F59E0B', '#3B82F6', '#EF4444'];
 

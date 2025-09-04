@@ -7,8 +7,13 @@
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
+      "image": "./assets/images/logo.svg",
+      "resizeMode": "contain",
       "backgroundColor": "#0F172A"
     },
+    "assetBundlePatterns": [
+      "assets/images/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
