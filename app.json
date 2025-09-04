@@ -4,6 +4,7 @@
     "slug": "FinZen",
     "version": "1.0.0",
     "orientation": "portrait",
+    "icon": "./assets/images/logo.svg",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
